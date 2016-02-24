@@ -1,0 +1,19 @@
+{
+    "name": "patricknelson/silverstripe-gridfieldlimititems",
+    "description": "Simple component which automatically limits the maximum number of items displayed in a GridField (including modifying actual relations).",
+    "type": "silverstripe-module",
+    "keywords": ["silverstripe", "gridfield", "limit", "maximum", "items"],
+    "authors": [
+    {
+        "name": "patricknelson",
+        "email": "pat@catchyour.com"
+    }],
+    "require": {
+        "silverstripe/framework": "^3.1",
+		"silverstripe/cms": "^3.1"
+	},
+	"extra": {
+		"installer-name": "gridfieldlimititems"
+	}
+    
+}
