@@ -1,7 +1,9 @@
 # silverstripe-gridfieldlimititems
-Simple component which automatically limits the maximum number of items displayed in a GridField (including modifying actual relations). 
+Simple component which automatically limits the maximum number of items displayed in a GridField (including modifying
+actual relations). 
 
-**Important:** This works well as a centralized method to maintain an actual hard limit on the number of `has_many` and `many_many` relations. Therefore, this will modify those relations and doesn't (yet) simply limit the number of items displayed in a grid field.
+**Important:** This works well as a centralized method to maintain an actual hard limit on the number of `has_many` and
+`many_many` relations. Therefore, this will modify those relations and doesn't (yet) simply limit the number of items displayed in a grid field.
 
 
 ## Example Usage
@@ -11,9 +13,11 @@ Simple component which automatically limits the maximum number of items displaye
 Start managing a relation using the `GridFieldConfig_LimitedRelationEditor` like so:  
 
 ```php
-// Setup a new relation editor with an upper hard limit of 10 items (automatically removing items past that amount).
+// Setup a new relation editor with an upper hard limit of 10 items. Items past this amount will be automatically
+// removed by GridFieldLimitItems (setup in this relation editor).
 $gridConfig = GridFieldConfig_LimitedRelationEditor::create(10);
-$fields->addFieldToTab('Root.main', new GridField('RelationName', 'Relation Title', $this->MyRelation(), $gridConfig)
+$gridField = new GridField('RelationName', 'Relation Title', $this->MyRelation(), $gridConfig);
+$fields->addFieldToTab('Root.main', $gridField);
 ```
 
 You can setup extra configuration options as well (most options have been included):
