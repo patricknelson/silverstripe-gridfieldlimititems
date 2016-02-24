@@ -6,6 +6,12 @@ actual relations).
 `many_many` relations. Therefore, this will modify those relations and doesn't (yet) simply limit the number of items displayed in a grid field.
 
 
+## Installation
+
+1. Run `composer require patricknelson/silverstripe-gridfieldlimititems`
+2. Run `sake dev/build`
+
+
 ## Example Usage
 
 **Quick Start**
