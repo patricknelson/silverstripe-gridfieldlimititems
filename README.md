@@ -8,7 +8,7 @@ actual relations).
 
 ## Example Usage
 
-**Quick start**
+**Quick Start**
 
 Start managing a relation using the `GridFieldConfig_LimitedRelationEditor` like so:  
 
