@@ -82,7 +82,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	/**
 	 * Allows you to perform some sort of action BEFORE any sort of manipulation is performed.
 	 *
-	 * @param	callable	$callback(GridField $grid, SS_List $dataList): bool
+	 * @param	callable	$callback(GridField $grid, SS_List $list): bool
 	 *
 	 * 						The callback can accept a GridField and SS_List instance. You can also return false from
 	 * 						your callback to prevent any sort of manipulation from taking place!
@@ -98,7 +98,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	/**
 	 * Allows you to perform some sort of action AFTER any sort of manipulation is performed.
 	 *
-	 * @param	callable	$callback(GridField $grid, SS_List $dataList)
+	 * @param	callable	$callback(GridField $grid, SS_List $list)
 	 *
 	 * 						The callback can accept a GridField and SS_List instance.
 	 *
