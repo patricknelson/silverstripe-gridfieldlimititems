@@ -22,7 +22,7 @@ Start managing a relation using the `GridFieldConfig_LimitedRelationEditor` like
 // Setup a new relation editor with an upper hard limit of 10 items. Items past this amount will be automatically
 // removed by GridFieldLimitItems (setup in this relation editor).
 $gridConfig = GridFieldConfig_LimitedRelationEditor::create(10);
-$gridField = new GridField('RelationName', 'Relation Title', $this->MyRelation(), $gridConfig);
+$gridField = new GridField('RelationName', 'Relation Title', $this->MyRelation()->sort('Sort'), $gridConfig);
 $fields->addFieldToTab('Root.main', $gridField);
 ```
 
@@ -71,6 +71,12 @@ $gridConfig->addComponent($limiter);
 
 // ... continue below with adding your new GridField instance with this $gridConfig...
 ```  
+
+
+## Known Issues
+
+- This could be vulnerable to issues relating to not runing in the proper order, in case you are sorting fields and the
+  newly sorted field is not yet properly intialized (e.g. starts out at 0 but should be set to 11 prior to modification).
 
 
 ## To Do
