@@ -11,7 +11,7 @@ class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEdit
 	/**
 	 * Setup new configuration for a relation with a hard maximum limit of items.
 	 *
-	 * @param int $maxItems
+	 * @param	int	$maxItems
 	 */
 	public function __construct($maxItems) {
 		parent::__construct($maxItems);
@@ -22,6 +22,19 @@ class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEdit
 
 		// Setup GridFieldLimitItems.
 		$this->addComponent(new GridFieldLimitItems($maxItems));
+	}
+
+
+	/**
+	 * Changing default 'insertBefore' value to ensure all new components added will run prior to the
+	 * 'GridFieldLimitItems' component.
+	 *
+	 * @param	GridFieldComponent	$component
+	 * @param	string				$insertBefore
+	 * @return	GridFieldConfig_LimitedRelationEditor
+	 */
+	public function addComponent(GridFieldComponent $component, $insertBefore = 'GridFieldLimitItems') {
+		return parent::addComponent($component, $insertBefore);
 	}
 
 }

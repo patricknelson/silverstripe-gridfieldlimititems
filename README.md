@@ -77,6 +77,10 @@ $gridConfig->addComponent($limiter);
 
 - This could be vulnerable to issues relating to not runing in the proper order, in case you are sorting fields and the
   newly sorted field is not yet properly intialized (e.g. starts out at 0 but should be set to 11 prior to modification).
+  In this scenario, you should be sure that your sorting component is added to the grid configuration PRIOR to this
+  component so that the sort can process first and then the pruning performed by this component can be done. This should
+  only be an issue if you are not using the built-in `GridFieldConfig_RelationEditor` which already ensures that it will
+  process the relation last.
 
 
 ## To Do
