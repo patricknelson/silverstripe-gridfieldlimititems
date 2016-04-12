@@ -85,6 +85,5 @@ $gridConfig->addComponent($limiter);
 
 ## To Do
 
- - Setup ability to customize notes.
  - Setup the ability to modify the returned list without actually affecting relations (i.e. read only, no writing at all to the database).
  - Unit tests to cover current functionality.
