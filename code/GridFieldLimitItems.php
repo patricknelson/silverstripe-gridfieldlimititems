@@ -15,6 +15,9 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	/** @var string */
 	protected $noteLocation = 'before';
 
+	/** @var string */
+	protected $noteTemplate = 'gridfield_limiteditems_note';
+
 	/** @var bool */
 	protected $removeFromTop = false;
 
@@ -67,6 +70,16 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 
 
 	/**
+	 * Filename of the template for note. If empty, note will be hidden.
+	 *
+	 * @param	string	$noteTemplate
+	 */
+	public function setNoteTemplate($noteTemplate) {
+		$this->noteTemplate = $noteTemplate;
+	}
+
+
+    /**
 	 * By default, items are removed from the bottom of the list, but this allows you to configure it to remove from
 	 * the top instead.
 	 *
@@ -116,9 +129,11 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	 * @return array
 	 */
 	public function getHTMLFragments($gridField) {
-		return [
-			$this->noteLocation => ArrayData::create(['maxItems' => $this->maxItems])->renderWith('gridfield_limiteditems_note')
-		];
+		if ($this->noteTemplate) {
+			return [
+				$this->noteLocation => ArrayData::create(['maxItems' => $this->maxItems])->renderWith($this->noteTemplate)
+			];
+		}
 	}
 
 
