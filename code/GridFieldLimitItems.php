@@ -14,7 +14,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 
 	/** @var string */
 	protected $noteLocation = 'before';
-	
+
 	/** @var bool */
 	protected $removeFromTop = false;
 
@@ -93,7 +93,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 		$this->onBeforeManipulate = $callback;
 		return $this;
 	}
-	
+
 
 	/**
 	 * Allows you to perform some sort of action AFTER any sort of manipulation is performed.
@@ -117,7 +117,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	 */
 	public function getHTMLFragments($gridField) {
 		return [
-			$this->noteLocation => "<p style='margin-top: 16px;'><strong>Note:</strong> This grid is limited to a maximum of $this->maxItems items.</p>",
+			$this->noteLocation => ArrayData::create(['maxItems' => $this->maxItems])->renderWith('gridfield_limiteditems_note')
 		];
 	}
 
