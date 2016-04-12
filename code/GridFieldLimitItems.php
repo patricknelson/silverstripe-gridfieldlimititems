@@ -15,8 +15,8 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	/** @var string */
 	protected $noteLocation = 'before';
 
-	/** @var string */
-	protected $noteTemplate = 'gridfield_limiteditems_note';
+	/** @var string 	Name of a template (ending with .ss, e.g. template.ss) or a string for sprintf with %d param */
+	protected $noteTemplate = 'gridfield_limiteditems_note.ss';
 
 	/** @var bool */
 	protected $removeFromTop = false;
@@ -130,8 +130,14 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	 */
 	public function getHTMLFragments($gridField) {
 		if ($this->noteTemplate) {
+			if (stripos(strrev($this->noteTemplate), strrev('.ss')) === 0) { // string ends .ss ?
+				$note = ArrayData::create(['maxItems' => $this->maxItems])->renderWith(substr($this->noteTemplate, 0, -3));
+			} else {
+				$note = sprintf($this->noteTemplate, $this->maxItems);
+			}
+
 			return [
-				$this->noteLocation => ArrayData::create(['maxItems' => $this->maxItems])->renderWith($this->noteTemplate)
+				$this->noteLocation => $note,
 			];
 		}
 	}
