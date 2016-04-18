@@ -208,4 +208,8 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 		SS_Log::log(print_r($message, true), SS_Log::DEBUG);
 	}
 
+	public function getMaxItems()
+	{
+		return $this->maxItems;
+	}
 }

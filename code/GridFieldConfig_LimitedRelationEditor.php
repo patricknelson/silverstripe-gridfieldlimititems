@@ -19,9 +19,11 @@ class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEdit
 		// Since GridFieldLimitItems is not yet compatible with GridFieldPaginator, remove that now.
 		$this->removeComponentsByType('GridFieldPaginator');
 		$this->removeComponentsByType('GridFieldPageCount');
+		$this->removeComponentsByType('GridFieldDetailForm');
 
 		// Setup GridFieldLimitItems.
 		$this->addComponent(new GridFieldLimitItems($maxItems));
+		$this->addComponent(new GridFieldLimitItemsDetailForm());
 	}
 
 
