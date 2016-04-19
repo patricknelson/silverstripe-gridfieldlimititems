@@ -5,7 +5,7 @@ class GridFieldLimitItemsDetailForm_ItemRequest extends GridFieldDetailForm_Item
     public function doSave($data, $form)
     {
         // Current items in grid & max allowed items
-        $list = $this->gridField->getList();
+        $list     = $this->gridField->getList();
         $maxItems = $this->gridField->getConfig()->getComponentByType('GridFieldLimitItems')->getMaxItems();
 
         // Prevent form submission if items in grid reached the allowed limit
