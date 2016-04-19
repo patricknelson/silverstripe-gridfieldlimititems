@@ -4,6 +4,30 @@ class GridFieldLimitItemsDetailForm_ItemRequest extends GridFieldDetailForm_Item
 {
     public function doSave($data, $form)
     {
+        if (!$this->canSave($form)) {
+            return false;
+        }
+
+        return parent::doSave($data, $form);
+    }
+
+    public function doSaveAndQuit($data, $form)
+    {
+        if (!$this->canSave($form)) {
+            return false;
+        }
+
+        return parent::doSaveAndQuit($data, $form);
+    }
+
+    /**
+     * Whether or not the user is allowed to save the record.
+     *
+     * @param $form
+     * @return bool|SS_HTTPResponse
+     */
+    protected function canSave($form)
+    {
         // Current items in grid & max allowed items
         $list     = $this->gridField->getList();
         $maxItems = $this->gridField->getConfig()->getComponentByType('GridFieldLimitItems')->getMaxItems();
@@ -19,6 +43,6 @@ class GridFieldLimitItemsDetailForm_ItemRequest extends GridFieldDetailForm_Item
             return $this->getToplevelController()->redirectBack();
         }
 
-        return parent::doSave($data, $form);
+        return true;
     }
 }
