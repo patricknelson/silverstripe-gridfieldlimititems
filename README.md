@@ -1,6 +1,7 @@
-# silverstripe-gridfieldlimititems
+# SilverStripe GridfieldLimitItems
+
 Simple component which automatically limits the maximum number of items displayed in a GridField (including modifying
-actual relations). 
+actual relations).
 
 **Important:** This works well as a centralized method to maintain an actual hard limit on the number of `has_many` and
 `many_many` relations. Therefore, this will modify those relations and doesn't (yet) simply limit the number of items displayed in a grid field.
@@ -16,13 +17,19 @@ actual relations).
 
 **Quick Start**
 
-Start managing a relation using the `GridFieldConfig_LimitedRelationEditor` like so:  
+Start managing a relation using the `GridFieldConfig_LimitedRelationEditor` like so:
 
 ```php
 // Setup a new relation editor with an upper hard limit of 10 items. Items past this amount will be automatically
 // removed by GridFieldLimitItems (setup in this relation editor).
 $gridConfig = GridFieldConfig_LimitedRelationEditor::create(10);
-$gridField = new GridField('RelationName', 'Relation Title', $this->MyRelation()->sort('Sort'), $gridConfig);
+$gridConfig->enforceLimit(); // remove, if you don't want to enforce this limitation
+$gridField = new GridField(
+	'RelationName',
+	'Relation Title',
+	$this->MyRelation()->sort('Sort'),
+	$gridConfig
+);
 $fields->addFieldToTab('Root.main', $gridField);
 ```
 
@@ -52,9 +59,7 @@ $limiter->onBeforeManipulate(function(GridField $grid, SS_List $list) {
 });
 ```
 
-
-**Warning:** Since this will modify a relation as a component, it's best to ensure that the relation itself is not being 
-modified by any other components, such as a paginator. If you are using the standard `GridFieldConfig_RelationEditor` you
+**Warning:** Since this will modify a relation as a component, it's best to ensure that the relation itself is not being modified by any other components, such as a aginator. If you are using the standard `GridFieldConfig_RelationEditor` you
 will need to remove that component. For example:
 
 ```php
@@ -70,7 +75,7 @@ $limiter = new GridFieldLimitItems(10); // Limit to max of 10.
 $gridConfig->addComponent($limiter);
 
 // ... continue below with adding your new GridField instance with this $gridConfig...
-```  
+```
 
 
 ## Known Issues
