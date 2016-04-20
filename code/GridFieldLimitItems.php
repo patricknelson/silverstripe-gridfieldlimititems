@@ -14,7 +14,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 
 	/** @var string */
 	protected $noteLocation = 'before';
-	
+
 	/** @var bool */
 	protected $removeFromTop = false;
 
@@ -41,6 +41,16 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	public function setMaxItems($maxItems) {
 		if ($maxItems < 1) throw new InvalidArgumentException('Maximum items must be at least 1 or greater.');
 		$this->maxItems = (int) $maxItems;
+	}
+
+
+	/**
+	 * The maximum number of items you wish to allow in this grid field.
+	 *
+	 * @return int $maxItems
+	 */
+	public function getMaxItems() {
+		return $this->maxItems;
 	}
 
 
@@ -80,6 +90,21 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 
 
 	/**
+	 * allows you to enforce the set limit by removing options to add new items
+	 */
+	public function enforceLimit()
+	{
+		// ensure we are removing the buttons if these are
+		$this->onAfterManipulate(function(GridField $grid, SS_List $list){
+			if ($list->count() == $this->getMaxItems()) {
+				$grid->getConfig()->removeComponentsByType('GridFieldAddNewButton');
+				$grid->getConfig()->removeComponentsByType('GridFieldAddExistingAutocompleter');
+			}
+		});
+	}
+
+
+	/**
 	 * Allows you to perform some sort of action BEFORE any sort of manipulation is performed.
 	 *
 	 * @param	callable	$callback(GridField $grid, SS_List $list): bool
@@ -91,9 +116,10 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	 */
 	public function onBeforeManipulate(callable $callback) {
 		$this->onBeforeManipulate = $callback;
+
 		return $this;
 	}
-	
+
 
 	/**
 	 * Allows you to perform some sort of action AFTER any sort of manipulation is performed.
@@ -106,6 +132,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	 */
 	public function onAfterManipulate(callable $callback) {
 		$this->onAfterManipulate = $callback;
+
 		return $this;
 	}
 
@@ -180,7 +207,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 
 	/**
 	 * For internal debug use only.
-	 * 
+	 *
 	 * @param	mixed	$message
 	 */
 	protected function debug($message) {
