@@ -180,32 +180,10 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
             return $dataList;
         }
 
-        // See if any action needs to be taken...
+        // Remove the add new button if the max items reached
         $total = $dataList->count();
-        if ($total > $this->maxItems) {
-            $index      = 0;
-            $lowerLimit = ($total - $this->maxItems);
-            $this->debug("List of $total is beyond threshold of $this->maxItems.");
-            $this->debug("Lower limit is: $lowerLimit");
-            foreach ($dataList as $item) {
-                // Remove items beyond threshold.
-                $index++;
-                $itemName                                           = "item #$index";
-                if (is_object($item) && isset($item->ID)) {
-                    $itemName = "item ID #$item->ID";
-                }
-                if ($this->removeFromTop) {
-                    if ($index <= $lowerLimit) {
-                        $this->debug("Removed item $itemName from top.");
-                        $dataList->remove($item);
-                    }
-                } else {
-                    if ($index > $this->maxItems) {
-                        $this->debug("Removed item $itemName from bottom.");
-                        $dataList->remove($item);
-                    }
-                }
-            }
+        if ($total >= $this->maxItems) {
+            $gridField->getConfig()->removeComponentsByType('GridFieldAddNewButton');
         }
 
         // Allow custom action after manipulation.
