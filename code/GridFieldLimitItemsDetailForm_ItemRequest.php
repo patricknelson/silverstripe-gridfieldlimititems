@@ -28,6 +28,11 @@ class GridFieldLimitItemsDetailForm_ItemRequest extends GridFieldDetailForm_Item
      */
     protected function canSave($form)
     {
+        // Allow to save item details on edit an existing record
+        if ($this->record->isInDB()) {
+            return true;
+        }
+
         // Current items in grid & max allowed items
         $list     = $this->gridField->getList();
         $maxItems = $this->gridField->getConfig()->getComponentByType('GridFieldLimitItems')->getMaxItems();
