@@ -180,10 +180,11 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
             return $dataList;
         }
 
-        // Remove the add new button if the max items reached
+        // Remove the add new / link existing buttons if the max items reached
         $total = $dataList->count();
         if ($total >= $this->maxItems) {
             $gridField->getConfig()->removeComponentsByType('GridFieldAddNewButton');
+            $gridField->getConfig()->removeComponentsByType('GridFieldAddExistingAutocompleter');
         }
 
         // Allow custom action after manipulation.
@@ -196,7 +197,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 
     /**
      * For internal debug use only.
-     * 
+     *
      * @param mixed $message
      */
     protected function debug($message)
