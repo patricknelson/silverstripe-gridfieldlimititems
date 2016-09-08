@@ -6,7 +6,7 @@
  *
  * @since	2016-02-24
  */
-class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEditor
+class GridFieldConfig_LimitedRecordEditor extends GridFieldConfig_RecordEditor
 {
     /**
      * Setup new configuration for a relation with a hard maximum limit of items.
