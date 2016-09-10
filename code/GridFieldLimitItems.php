@@ -12,9 +12,12 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	/** @var int */
 	protected $maxItems;
 
+	/** @var bool */
+	protected $removeButton = true;
+
 	/** @var string */
 	protected $noteLocation = 'before';
-	
+
 	/** @var bool */
 	protected $removeFromTop = false;
 
@@ -26,7 +29,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 
 
 	/**
-	 * @param	int	$maxItems	The maximum number of items you wish to allow in this grid field.
+	 * @param	int		$maxItems		The maximum number of items you wish to allow in this grid field.
 	 */
 	public function __construct($maxItems) {
 		$this->setMaxItems($maxItems);
@@ -41,6 +44,16 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	public function setMaxItems($maxItems) {
 		if ($maxItems < 1) throw new InvalidArgumentException('Maximum items must be at least 1 or greater.');
 		$this->maxItems = (int) $maxItems;
+	}
+
+
+	/**
+	 * Indicates that the 'Add New [x]' button should be removed once we reach our limit.
+	 *
+	 * @param $removeButton
+	 */
+	public function setRemoveButton($removeButton) {
+		$this->removeButton = (bool) $removeButton;
 	}
 
 
@@ -93,7 +106,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 		$this->onBeforeManipulate = $callback;
 		return $this;
 	}
-	
+
 
 	/**
 	 * Allows you to perform some sort of action AFTER any sort of manipulation is performed.
@@ -127,7 +140,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 	 *
 	 * @param GridField
 	 * @param SS_List
-	 * @return DataList
+	 * @return DataList|SS_List
 	 */
 	public function getManipulatedData(GridField $gridField, SS_List $dataList) {
 		// Allow custom action prior to manipulation and, if false is returned, avoid doing anything at all.
@@ -171,7 +184,14 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 			}
 		}
 
-		// Allow custom action after manipulation.
+		// Also remove the 'Add [item]' button, if it exists.
+		if ($this->removeButton && $total >= $this->maxItems) {
+			// ... obviously shouldn't be null, but just in case.
+			$gridConfig = $gridField->getConfig();
+			if ($gridConfig) $gridConfig->removeComponentsByType('GridFieldAddNewButton');
+		}
+
+			// Allow custom action after manipulation.
 		if (isset($this->onAfterManipulate)) call_user_func($this->onAfterManipulate, $gridField, $dataList);
 
 		return $dataList;
@@ -180,7 +200,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 
 	/**
 	 * For internal debug use only.
-	 * 
+	 *
 	 * @param	mixed	$message
 	 */
 	protected function debug($message) {
