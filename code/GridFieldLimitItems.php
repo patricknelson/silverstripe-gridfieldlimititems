@@ -3,8 +3,8 @@
  * Simple component which enables you to easily limit the maximum number of items that are setup in a relation that is
  * being managed by a GridField instance.
  *
- * @author    Patrick Nelson, pat@catchyour.com
- * @since    2016-02-24
+ * @author  Patrick Nelson, pat@catchyour.com
+ * @since   2016-02-24
  */
 
 class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManipulator {
