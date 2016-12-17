@@ -24,7 +24,6 @@ class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEdit
 		$this->addComponent(new GridFieldLimitItems($maxItems));
 	}
 
-
 	/**
 	 * Changing default 'insertBefore' value to ensure all new components added will run prior to the
 	 * 'GridFieldLimitItems' component.
