@@ -1,6 +1,7 @@
 <?php
 namespace MBIE\GridFieldLimitRelationEditor;
 
+use SilverStripe\Forms\GridField\GridFieldComponent;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 
 /**
@@ -38,5 +39,4 @@ class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEdit
     public function addComponent(GridFieldComponent $component, $insertBefore = 'GridFieldLimitItems') {
         return parent::addComponent($component, $insertBefore);
     }
-
 }
