@@ -4,8 +4,10 @@ namespace MBIE\GridFieldLimitRelationEditor;
 
 use Psr\Cache\InvalidArgumentException;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridField_DataManipulator;
 use SilverStripe\Forms\GridField\GridField_HTMLProvider;
+use SilverStripe\Forms\GridField\GridFieldPaginator;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\ORM\UnsavedRelationList;
 
@@ -19,22 +21,34 @@ use SilverStripe\ORM\UnsavedRelationList;
 
 class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManipulator {
 
-    /** @var int */
+    /**
+     * @var int
+     */
     protected $maxItems;
 
-    /** @var bool */
+    /**
+     * @var boolean
+     */
     protected $removeButton = true;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $noteLocation = 'before';
 
-    /** @var bool */
+    /**
+     * @var boolean
+     */
     protected $removeFromTop = false;
 
-    /** @var callable */
+    /**
+     * @var callable
+     */
     protected $onBeforeManipulate;
 
-    /** @var callable */
+    /**
+     * @var callable
+     */
     protected $onAfterManipulate;
 
     /**
@@ -153,7 +167,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
         if(($dataList instanceof UnsavedRelationList)) return $dataList;
 
         // Not compatible with paginator.
-        if ($gridField->getConfig()->getComponentByType('GridFieldPaginator')) {
+        if ($gridField->getConfig()->getComponentByType(GridFieldPaginator::class)) {
             $this->debug('GridFieldLimitItems is not compatible with GridFieldPaginator.');
             return $dataList;
         }
@@ -188,7 +202,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
         if ($this->removeButton && $total >= $this->maxItems) {
             // ... obviously shouldn't be null, but just in case.
             $gridConfig = $gridField->getConfig();
-            if ($gridConfig) $gridConfig->removeComponentsByType('GridFieldAddNewButton');
+            if ($gridConfig) $gridConfig->removeComponentsByType(GridFieldAddNewButton::class);
         }
 
             // Allow custom action after manipulation.
