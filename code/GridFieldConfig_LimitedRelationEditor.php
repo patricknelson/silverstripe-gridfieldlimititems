@@ -14,6 +14,12 @@ use SilverStripe\Forms\GridField\GridFieldPaginator;
  * @since   2016-02-24
  */
 class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEditor {
+    /**
+     * used instance of the GridFieldLimitItems class.
+     *
+     * @var GridFieldLimitItems
+     */
+    protected $limiter;
 
     /**
      * Setup new configuration for a relation with a hard maximum limit of items.
@@ -28,7 +34,8 @@ class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEdit
         $this->removeComponentsByType(GridFieldPageCount::class);
 
         // Setup GridFieldLimitItems.
-        $this->addComponent(new GridFieldLimitItems($maxItems));
+        $this->limiter = new GridFieldLimitItems($maxItems);
+        $this->addComponent($this->limiter);
     }
 
     /**
@@ -41,5 +48,17 @@ class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEdit
      */
     public function addComponent(GridFieldComponent $component, $insertBefore = GridFieldLimitItems::class) {
         return parent::addComponent($component, $insertBefore);
+    }
+
+    /**
+     * allows you to enforce the set limit by removing options to add new items
+     *
+     * @return  GridFieldConfig_LimitedRelationEditor
+     */
+    public function enforceLimit()
+    {
+        // set the limit to be enforced
+        $this->limiter->enforceLimit();
+        return $this;
     }
 }
