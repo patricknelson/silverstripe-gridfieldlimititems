@@ -1,6 +1,6 @@
 <?php
 
-namespace MBIE\GridFieldLimitRelationEditor;
+namespace PatrickNelson\GridFieldLimitItems;
 
 use SilverStripe\Forms\GridField\GridFieldComponent;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;

@@ -1,6 +1,6 @@
 <?php
 
-namespace MBIE\GridFieldLimitRelationEditor;
+namespace PatrickNelson\GridFieldLimitItems;
 
 use Psr\Cache\InvalidArgumentException;
 use SilverStripe\Forms\GridField\GridField;
