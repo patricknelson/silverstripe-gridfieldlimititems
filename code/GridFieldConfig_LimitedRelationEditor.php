@@ -1,11 +1,15 @@
 <?php
+namespace MBIE\GridFieldLimitRelationEditor;
+
+use SilverStripe\Forms\GridField\GridFieldComponent;
+use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+
 /**
  * Sets up a quick GridField configuration for modifying relations using the GridFieldLimitItems component.
  *
  * @author  Patrick Nelson, pat@catchyour.com
  * @since   2016-02-24
  */
-
 class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEditor {
 
     /**
@@ -35,5 +39,4 @@ class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEdit
     public function addComponent(GridFieldComponent $component, $insertBefore = 'GridFieldLimitItems') {
         return parent::addComponent($component, $insertBefore);
     }
-
 }

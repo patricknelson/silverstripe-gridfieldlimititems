@@ -1,4 +1,14 @@
 <?php
+
+namespace MBIE\GridFieldLimitRelationEditor;
+
+use Psr\Cache\InvalidArgumentException;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridField_DataManipulator;
+use SilverStripe\Forms\GridField\GridField_HTMLProvider;
+use SilverStripe\ORM\SS_List;
+use SilverStripe\ORM\UnsavedRelationList;
+
 /**
  * Simple component which enables you to easily limit the maximum number of items that are setup in a relation that is
  * being managed by a GridField instance.
@@ -186,14 +196,4 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
 
         return $dataList;
     }
-
-    /**
-     * For internal debug use only.
-     *
-     * @param   mixed   $message
-     */
-    protected function debug($message) {
-        SS_Log::log(print_r($message, true), SS_Log::DEBUG);
-    }
-
 }
