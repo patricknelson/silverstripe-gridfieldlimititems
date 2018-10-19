@@ -3,7 +3,10 @@
 namespace PatrickNelson\GridFieldLimitItems;
 
 use Psr\Cache\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridField_DataManipulator;
 use SilverStripe\Forms\GridField\GridField_HTMLProvider;
@@ -69,6 +72,15 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
     }
 
     /**
+     * The maximum number of items you wish to allow in this grid field.
+     *
+     * @return int $maxItems
+     */
+    public function getMaxItems() {
+        return $this->maxItems;
+    }
+
+    /**
      * Indicates that the 'Add New [x]' button should be removed once we reach our limit.
      *
      * @param $removeButton
@@ -107,6 +119,23 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
     public function setRemoveFromTop($removeFromTop) {
         $this->removeFromTop = (bool) $removeFromTop;
         return $this;
+    }
+
+    /**
+     * allows you to enforce the set limit by removing options to add new items
+     */
+    public function enforceLimit()
+    {
+        // ensure we are removing the buttons if these are
+        $this->onAfterManipulate(function(GridField $grid, SS_List $list){
+            if ($list->count() == $this->getMaxItems()) {
+                // var_dump($grid->getConfig());
+                // die();
+
+                $grid->getConfig()->removeComponentsByType(GridFieldAddNewButton::class);
+                $grid->getConfig()->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
+            }
+        });
     }
 
     /**
@@ -209,5 +238,14 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
         if (isset($this->onAfterManipulate)) call_user_func($this->onAfterManipulate, $gridField, $dataList);
 
         return $dataList;
+    }
+
+    /**
+     * For internal debug use only.
+     *
+     * @param mixed $message
+     */
+    protected function debug($message) {
+        Injector::inst()->get(LoggerInterface::class)->error($message);
     }
 }
