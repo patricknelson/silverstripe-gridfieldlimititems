@@ -1,4 +1,19 @@
 <?php
+
+namespace PatrickNelson\GridFieldLimitItems;
+
+use Psr\Cache\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\Forms\GridField\GridFieldAddNewButton;
+use SilverStripe\Forms\GridField\GridField_DataManipulator;
+use SilverStripe\Forms\GridField\GridField_HTMLProvider;
+use SilverStripe\Forms\GridField\GridFieldPaginator;
+use SilverStripe\ORM\SS_List;
+use SilverStripe\ORM\UnsavedRelationList;
+
 /**
  * Simple component which enables you to easily limit the maximum number of items that are setup in a relation that is
  * being managed by a GridField instance.
@@ -9,22 +24,34 @@
 
 class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManipulator {
 
-    /** @var int */
+    /**
+     * @var int
+     */
     protected $maxItems;
 
-    /** @var bool */
+    /**
+     * @var boolean
+     */
     protected $removeButton = true;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $noteLocation = 'before';
 
-    /** @var bool */
+    /**
+     * @var boolean
+     */
     protected $removeFromTop = false;
 
-    /** @var callable */
+    /**
+     * @var callable
+     */
     protected $onBeforeManipulate;
 
-    /** @var callable */
+    /**
+     * @var callable
+     */
     protected $onAfterManipulate;
 
     /**
@@ -42,6 +69,15 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
     public function setMaxItems($maxItems) {
         if ($maxItems < 1) throw new InvalidArgumentException('Maximum items must be at least 1 or greater.');
         $this->maxItems = (int) $maxItems;
+    }
+
+    /**
+     * The maximum number of items you wish to allow in this grid field.
+     *
+     * @return int $maxItems
+     */
+    public function getMaxItems() {
+        return $this->maxItems;
     }
 
     /**
@@ -83,6 +119,20 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
     public function setRemoveFromTop($removeFromTop) {
         $this->removeFromTop = (bool) $removeFromTop;
         return $this;
+    }
+
+    /**
+     * allows you to enforce the set limit by removing options to add new items
+     */
+    public function enforceLimit()
+    {
+        // ensure we are removing the buttons if these are
+        $this->onAfterManipulate(function(GridField $grid, SS_List $list){
+            if ($list->count() == $this->getMaxItems()) {
+                $grid->getConfig()->removeComponentsByType(GridFieldAddNewButton::class);
+                $grid->getConfig()->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
+            }
+        });
     }
 
     /**
@@ -143,7 +193,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
         if(($dataList instanceof UnsavedRelationList)) return $dataList;
 
         // Not compatible with paginator.
-        if ($gridField->getConfig()->getComponentByType('GridFieldPaginator')) {
+        if ($gridField->getConfig()->getComponentByType(GridFieldPaginator::class)) {
             $this->debug('GridFieldLimitItems is not compatible with GridFieldPaginator.');
             return $dataList;
         }
@@ -178,7 +228,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
         if ($this->removeButton && $total >= $this->maxItems) {
             // ... obviously shouldn't be null, but just in case.
             $gridConfig = $gridField->getConfig();
-            if ($gridConfig) $gridConfig->removeComponentsByType('GridFieldAddNewButton');
+            if ($gridConfig) $gridConfig->removeComponentsByType(GridFieldAddNewButton::class);
         }
 
             // Allow custom action after manipulation.
@@ -190,10 +240,9 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
     /**
      * For internal debug use only.
      *
-     * @param   mixed   $message
+     * @param mixed $message
      */
     protected function debug($message) {
-        SS_Log::log(print_r($message, true), SS_Log::DEBUG);
+        Injector::inst()->get(LoggerInterface::class)->error($message);
     }
-
 }
