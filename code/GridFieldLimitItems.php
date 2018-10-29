@@ -129,9 +129,6 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
         // ensure we are removing the buttons if these are
         $this->onAfterManipulate(function(GridField $grid, SS_List $list){
             if ($list->count() == $this->getMaxItems()) {
-                // var_dump($grid->getConfig());
-                // die();
-
                 $grid->getConfig()->removeComponentsByType(GridFieldAddNewButton::class);
                 $grid->getConfig()->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
             }
