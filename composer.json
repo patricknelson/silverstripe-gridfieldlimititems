@@ -11,10 +11,15 @@
     }],
     "require": {
         "silverstripe/framework": "^4.0",
-		"silverstripe/cms": "^4.0"
-	},
-	"extra": {
-		"installer-name": "gridfieldlimititems"
-	}
+        "silverstripe/cms": "^4.0"
+    },
+    "extra": {
+        "installer-name": "gridfieldlimititems"
+    },
+    "autoload": {
+        "psr-4": {
+            "PatrickNelson\\GridFieldLimitItems\\": "code/"
+        }
+    }
 
 }
