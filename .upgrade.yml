@@ -1,2 +1,3 @@
 mappings:
   GridFieldLimitItems: PatrickNelson\GridFieldLimitItems\GridFieldLimitItems
+  GridFieldConfig_LimitedRelationEditor: PatrickNelson\GridFieldLimitItems\GridFieldConfig_LimitedRelationEditor
