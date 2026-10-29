@@ -2,7 +2,7 @@
 
 namespace PatrickNelson\GridFieldLimitItems;
 
-use Psr\Cache\InvalidArgumentException;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\GridField\GridField;
@@ -282,6 +282,6 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
      * @param mixed $message
      */
     protected function debug($message) {
-        Injector::inst()->get(LoggerInterface::class)->error($message);
+        Injector::inst()->get(LoggerInterface::class)->debug($message);
     }
 }
