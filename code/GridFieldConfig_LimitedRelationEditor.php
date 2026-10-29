@@ -49,16 +49,4 @@ class GridFieldConfig_LimitedRelationEditor extends GridFieldConfig_RelationEdit
     public function addComponent(GridFieldComponent $component, $insertBefore = GridFieldLimitItems::class) {
         return parent::addComponent($component, $insertBefore);
     }
-
-    /**
-     * allows you to enforce the set limit by removing options to add new items
-     *
-     * @return  GridFieldConfig_LimitedRelationEditor
-     */
-    public function enforceLimit()
-    {
-        // set the limit to be enforced
-        $this->limiter->enforceLimit();
-        return $this;
-    }
 }

@@ -6,7 +6,6 @@ use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridField_DataManipulator;
 use SilverStripe\Forms\GridField\GridField_HTMLProvider;
@@ -30,9 +29,14 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
     protected $maxItems;
 
     /**
-     * @var boolean
+     * @var string[]
      */
-    protected $removeButton = true;
+    protected $componentsToRemoveAtLimit = [GridFieldAddNewButton::class];
+
+    /**
+     * @var string
+     */
+    protected $note;
 
     /**
      * @var string
@@ -81,12 +85,34 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
     }
 
     /**
-     * Indicates that the 'Add New [x]' button should be removed once we reach our limit.
+     * Backward compatible toggle for removing add controls once limit is reached.
      *
-     * @param $removeButton
+     * @param bool $removeButton
      */
     public function setRemoveButton($removeButton) {
-        $this->removeButton = (bool) $removeButton;
+        if ($removeButton) {
+            $this->componentsToRemoveAtLimit[] = GridFieldAddNewButton::class;
+        } else {
+            $this->componentsToRemoveAtLimit = array_diff($this->componentsToRemoveAtLimit, [GridFieldAddNewButton::class]);
+        }
+    }
+
+    /**
+     * Components that should be removed once the item limit has been reached.
+     *
+     * @param string[] $components
+     */
+    public function setComponentsToRemoveAtLimit(array $components) {
+        $this->componentsToRemoveAtLimit = $components;
+    }
+
+    /**
+     * Components that should be removed once the item limit has been reached.
+     *
+     * @return string[]
+     */
+    public function getComponentsToRemoveAtLimit() {
+        return $this->componentsToRemoveAtLimit;
     }
 
     /**
@@ -110,6 +136,26 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
     }
 
     /**
+     * Note HTML displayed above or below the grid field.
+     *
+     * @param   string  $note
+     * @return  GridFieldLimitItems
+     */
+    public function setNote($note) {
+        $this->note = $note;
+        return $this;
+    }
+
+    /**
+     * Note HTML displayed above or below the grid field.
+     *
+     * @return string
+     */
+    public function getNote() {
+        return $this->note ?? "<p style='margin-top: 16px;'><strong>Note:</strong> This grid is limited to a maximum of $this->maxItems items.</p>";
+    }
+
+    /**
      * By default, items are removed from the bottom of the list, but this allows you to configure it to remove from
      * the top instead.
      *
@@ -119,20 +165,6 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
     public function setRemoveFromTop($removeFromTop) {
         $this->removeFromTop = (bool) $removeFromTop;
         return $this;
-    }
-
-    /**
-     * allows you to enforce the set limit by removing options to add new items
-     */
-    public function enforceLimit()
-    {
-        // ensure we are removing the buttons if these are
-        $this->onAfterManipulate(function(GridField $grid, SS_List $list){
-            if ($list->count() == $this->getMaxItems()) {
-                $grid->getConfig()->removeComponentsByType(GridFieldAddNewButton::class);
-                $grid->getConfig()->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
-            }
-        });
     }
 
     /**
@@ -171,7 +203,7 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
      */
     public function getHTMLFragments($gridField) {
         return [
-            $this->noteLocation => "<p style='margin-top: 16px;'><strong>Note:</strong> This grid is limited to a maximum of $this->maxItems items.</p>",
+            $this->noteLocation => $this->getNote(),
         ];
     }
 
@@ -224,14 +256,21 @@ class GridFieldLimitItems implements GridField_HTMLProvider, GridField_DataManip
             }
         }
 
-        // Also remove the 'Add [item]' button, if it exists.
-        if ($this->removeButton && $total >= $this->maxItems) {
+        // Remove specified components once the item limit has been reached.
+        if ($total >= $this->maxItems) {
             // ... obviously shouldn't be null, but just in case.
             $gridConfig = $gridField->getConfig();
-            if ($gridConfig) $gridConfig->removeComponentsByType(GridFieldAddNewButton::class);
+            if ($gridConfig) {
+                foreach ($this->componentsToRemoveAtLimit as $type) {
+                    $components = $gridConfig->getComponentsByType($type);
+                    foreach ($components as $component) {
+                        $gridConfig->removeComponent($component);
+                    }
+                }
+            }
         }
 
-            // Allow custom action after manipulation.
+        // Allow custom action after manipulation.
         if (isset($this->onAfterManipulate)) call_user_func($this->onAfterManipulate, $gridField, $dataList);
 
         return $dataList;
