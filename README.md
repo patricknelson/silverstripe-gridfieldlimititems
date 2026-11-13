@@ -1,6 +1,50 @@
+> [!WARNING]
+> This package has been abandoned. For Silverstripe 4 and above, please consider either using [fromholdio/silverstripe-gridfield-limiter](https://github.com/fromholdio/silverstripe-gridfield-limiter) or using the `Injector` to override the default `GridFieldAddNewButton` with very minor customizations.
+>
+> For example, in YAML config:
+> ```yaml
+> SilverStripe\Core\Injector\Injector:
+>   SilverStripe\Forms\GridField\GridFieldAddNewButton:
+>     class: CustomGridFieldAddNewButton
+> ```
+>
+> And in PHP, create a new class:
+>
+> ```php
+> class CustomGridFieldAddNewButton extends GridFieldAddNewButton {
+>
+> 	protected int $maxItems = 0;
+>
+> 	/**
+> 	 * @param int $maxItems Max number of items to allow before hiding this button, or 0 for no limit.
+> 	 * @return $this
+> 	 */
+> 	public function setMaxItems(int $maxItems): self {
+> 		$this->maxItems = $maxItems;
+> 		return $this;
+> 	}
+>
+> 	/**
+> 	 * Checks the data list now prior to render to determine if the button should be rendered as well.
+> 	 *
+> 	 * @param GridField $gridField
+> 	 * @return array
+> 	 */
+> 	public function getHTMLFragments($gridField) {
+> 		if ($this->maxItems > 0 && $gridField->getList()->count() >= $this->maxItems) return [];
+> 		return parent::getHTMLFragments($gridField);
+> 	}
+>
+> }
+> ```
+> Combine the above with other best practices such as using `$list->limit()` or `$List.Limit()` (in SS templates) when rendering on the front-end as well as adding notes/warnings to the `GridField` to warn users of potential issues.
+
+
+
+
 # silverstripe-gridfieldlimititems
 Simple component which automatically limits the maximum number of items displayed in a GridField (including modifying
-actual relations). 
+actual relations).
 
 **Important:** This works well as a centralized method to maintain an actual hard limit on the number of `has_many` and
 `many_many` relations. Therefore, this will modify those relations and doesn't (yet) simply limit the number of items displayed in a grid field.
@@ -16,7 +60,7 @@ actual relations).
 
 **Quick Start**
 
-Start managing a relation using the `GridFieldConfig_LimitedRelationEditor` like so:  
+Start managing a relation using the `GridFieldConfig_LimitedRelationEditor` like so:
 
 ```php
 // Setup a new relation editor with an upper hard limit of 10 items. Items past this amount will be automatically
@@ -53,7 +97,7 @@ $limiter->onBeforeManipulate(function(GridField $grid, SS_List $list) {
 ```
 
 
-**Warning:** Since this will modify a relation as a component, it's best to ensure that the relation itself is not being 
+**Warning:** Since this will modify a relation as a component, it's best to ensure that the relation itself is not being
 modified by any other components, such as a paginator. If you are using the standard `GridFieldConfig_RelationEditor` you
 will need to remove that component. For example:
 
@@ -70,7 +114,7 @@ $limiter = new GridFieldLimitItems(10); // Limit to max of 10.
 $gridConfig->addComponent($limiter);
 
 // ... continue below with adding your new GridField instance with this $gridConfig...
-```  
+```
 
 
 ## Known Issues
